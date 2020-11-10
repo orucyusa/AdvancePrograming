@@ -31,25 +31,26 @@ function fileSelect() {
 }
 function checkFiles(b) {
     let files = [...local.files]
-    let benzerMi = false
-    let dosyaIsmi = ""
-    for(let file of files){
-        if(b.size == file.size && b.type == file.type){
-            benzerMi = true;
-            dosyaIsmi = file.name;
+    let selectedFilesCount=0;
+    let selectedFilesNames="\nselected files: \n"
+    let isMatch = false
+    let fileName = ""
 
+    for(let f of files){
+        selectedFilesCount++;
+        selectedFilesNames += f.name + '\n';
+        if(b.size == f.size && b.type == f.type){
+            fileName = f.name;
+            isMatch = true;
         }
-
     }
-
-    let x = remote.value.split("/");
-
-    if(benzerMi){
-
-        out.innerText = x[x.length-1] + " is the same as " + dosyaIsmi + "\n"
+    if(isMatch){
+        let x = remote.value.split("/");
+        out.innerText = x[x.length-1]+ " is the same as " + fileName + "\n"
     }else{
         out.innerText = "all files are diffrent"
     }
+    out.innerText+=selectedFilesNames
     
 }
 const L = console.log
