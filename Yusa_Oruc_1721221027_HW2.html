@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" href="/305/images/icon192.png">
+    <title>HMW2 Database and timing</title>
+
+    <style>
+        body {
+            max-width: 440px;
+        }
+
+        .link {
+            color: blue;
+            cursor: pointer;
+            font-style: italic;
+        }
+
+        .liste {
+            visibility: hidden;
+            font: 11px arial, sans-serif;
+            color: white;
+            background: blue;
+            cursor: text;
+            padding: 6px;
+            position: absolute;
+            height: 116px;
+            overflow-y: auto;
+        }
+
+        .link:hover .liste {
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 id=title></h2>
+    <H3>YUŞA ORUÇ</H3>
+
+    <div>
+        <button onClick='randomStd()'>Random</button>
+        <button onClick='findBest()'>Best GPA</button>
+        <button onClick='out.innerText=""'>Clear</button>
+    </div>
+
+    <br>
+
+    <div>Enter The Student Number <br>
+
+        <input id="student_id" type=text>
+        <button onClick='exam_schdule(student_id.value)'>Show Exam Schedule</button>
+    </div>
+
+    <br>
+
+    <div> Enter The Course Id <br>
+        <input id="course_id" type=text value="math 206">
+        <button onClick='courses_student(course_id.value)'>Show Student List</button>
+    </div>
+
+    <br>
+
+    <div>Enter The Exam Room <br>
+
+        <input id="room_id" type=text>
+
+        <button onClick='courses_room(room_id.value)'>Course list</button>
+        <button onClick='courses_number(room_id.value)'>Total Course Number</button>
+    </div>
+    <br>
+    <div>
+
+        <button onClick='find_above_average()'>Find Student Above Avarage GPA </button>
+
+    </div>
+    <br>
+    <div> 
+        Case And Map timing <br>
+
+        <button onClick='compare()'>Show Time </button>
+
+    </div>
+
+
+
+
+    <p id=out onClick='doClick(event)'>Result:</p>
+
+    <hr />
+    <b>Sample code</b>
+    <pre id=sample></pre>
+    <hr />
+
+    <script>
+        "use strict";
+        class Student {
+            constructor(id, name, gpa, ...list) {
+                if (!id) throw "Undefined Student id"
+                this.id = id; this.name = name;
+                this.gpa = gpa.padEnd(4, '0');
+                this.list = list
+            }
+            toString() {
+                return this.id + ' ' + this.name + ' ' + this.gpa
+            }
+            static fromString(s) {
+                return new Student(...s.split('\t'))
+            }
+        }
+        class Course {
+            constructor(id, time, date, ...rooms) {
+                if (!id) throw "Undefined Course id"
+                this.id = id;
+                this.time = time
+                this.date = date
+                this.rooms = rooms
+            }
+            toString() {
+                return this.id + ' ' + this.time + ' ' + this.date
+            }
+            static fromString(s) {
+                return new Course(...s.split('\t'))
+            }
+        }
+
+        function report(msg, id, list) {
+            msg += " "; let txt = "<br>\n" + msg;
+            if (id) {
+                msg += id; txt += "<span class=link>" + id
+                if (list) txt += "<span class=liste>"
+                    + list.join("<br>") + "</span>"
+                txt += "</span>"
+            }
+            console.log(msg); out.innerHTML += txt;
+        }
+        const stdMap = new Map(), crsMap = new Map(); //global
+        function makeData(txt, Maker, map) {
+            map.clear()
+            for (let line of txt.split('\n')) {
+                if (!line) continue
+                let std = Maker.fromString(line)
+                map.set(std.id, std)
+            }
+            report(map.size + " items");
+            return map;
+        }
+        function doClick(evt) {
+            let s = evt.target.innerText;
+
+            if (/^\d+$/.test(s)) showStudent(s);
+        }
+        function showStudent(id) {
+            let std = stdMap.get(id);
+            if (!std) return report(id + " not found");
+            let t = std.toString()
+            report(t, "(" + std.list.length + " courses)", std.list);
+            return std
+        }
+        function showCourse(id) {
+            id = id.toUpperCase();
+            let a = [];
+            for (let std of stdMap.values())
+                if (std.list.includes(id))
+                    a.push(std.id + " " + std.name);
+            if (a.length > 0) {
+                report(id + ": ", a.length + " students", a);
+                report("time: " + crsMap.get(id).time + "\ndate: " + crsMap.get(id).date)
+            }
+
+            else report("No students in " + id);
+            return a
+        }
+        function randomStd() {
+            let keys = [...stdMap.keys()]
+            console.assert(keys.length == stdMap.size)
+            let i = Math.trunc(keys.length * Math.random());
+            let b = stdMap.get(keys[i]);
+            report("Random: ", b.id);
+            return b
+        }
+        function findBest() {
+            let best = 0
+            for (let s of stdMap.values()) {
+                if (s.gpa > best) {
+                    best = s.gpa
+                }
+            }
+            report(best);
+        }
+        function exam_schdule(s_id) {
+            report("************************************************")
+            for (let s of stdMap.values())
+                if (s.id == s_id)
+                    for (let a of s.list) {
+                        for (let c of crsMap.values()) {
+                            if (a == c.id)
+                                report(c.id + " : " + c.time + " : " + c.date)
+                        }
+                    }
+            report("************************************************")
+        }
+        function courses_student(c_id) {
+            report("************************************************")
+            let course_students = [];
+            c_id = c_id.toUpperCase();
+
+            for (let s of stdMap.values())
+                if (s.list.includes(c_id)) {
+                    course_students.push(s.id + " : " + s.name);
+                }
+
+            for (let c of course_students) {
+                report(c + " \n");
+
+            }
+            report("************************************************")
+
+
+        }
+        function courses_room(room_id) {
+            report("************************************************")
+            for (let c of crsMap.values()) {
+                for (let r of c.rooms) {
+                    if (room_id == r) {
+                        report(c.id)
+                    }
+                }
+            }
+            report("************************************************")
+        }
+        function courses_number(room_id) {
+            report("************************************************")
+            let course_counter = 0
+            for (let c of crsMap.values()) {
+                for (let r of c.rooms) {
+                    if (room_id == r) {
+                        course_counter = course_counter + 1;
+                    }
+                }
+            }
+            report(course_counter)
+            report("************************************************")
+        }
+        function compare(){
+            report("************************************************")
+            let keys = []
+            let num = 212992604
+            let num2= num+10000
+            let count1=0
+            let count2=0
+            for (const x of stdMap) {
+                keys.push(x[0])
+            }
+            let time_has=Date.now()
+            for (let i = num; i < num2; i++) {
+                if(stdMap.has(i.toString())){
+                    count1++
+                }
+            }
+            let time_has_2=Date.now()-time_has
+            let time_includes=Date.now()
+            for (let i = num; i < num2; i++) {
+                if(keys.includes(i.toString())){
+                    count2++
+                }
+
+            }
+            let time_includes_2=Date.now()-time_includes
+            report("Has Counter = " + count1)
+            report("Includes Counter = " + count2)
+            report("Has Time = " + time_has_2)
+            report("Includes Time = "+ time_includes_2)
+            report("************************************************")
+        }
+
+        function find_above_average() {
+            report("************************************************")
+            
+            let total = 0;
+            let average = 0;
+            let studentCounter = 0;
+            let counter = 0;
+            for (let s of stdMap.values()) {
+                total += parseFloat(s.gpa)
+                studentCounter++;
+            }
+
+            average = total / studentCounter
+
+            for (let student of stdMap.values()) {
+                if (student.gpa > average) {
+                    counter++;
+                }
+            }
+            report("Ortalama GPA: "+average.toFixed(2))
+            report("Ortalamanın üzerinde " + counter + " öğrenci vardır.")
+
+            report("************************************************")
+        }
+
+        const LINK = "https://maeyler.github.io/JS/data/"
+        function readStudents() {
+            fetch(LINK + "Students.txt").then(r => r.text())
+                .then(t => makeData(t, Student, stdMap))
+        }
+        function readCourses() {
+            fetch(LINK + "Courses.txt").then(r => r.text())
+                .then(t => makeData(t, Course, crsMap))
+        }
+        title.innerText = document.title
+        sample.innerText = exam_schdule + "\n" + courses_student + "\n" + courses_room + "\n" + courses_number + "\n" + compare + "\n" + find_above_average + "\n"
+        readStudents(); readCourses();
+    </script>
+</body> 
+
+</html>
