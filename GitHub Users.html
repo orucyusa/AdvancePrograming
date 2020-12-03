@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" href="../images/icon192.png">
+  <title>GitHub Users</title>
+  <style>
+    body {
+        max-width: 440px;
+    }
+    img {
+        padding-right: 12px; 
+        width: 64px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2 id=title></h2>
+<input type=text id=usr value=blm-fsmvu onChange="readUser()">
+<hr>
+<img id="photo"></img>
+
+<div id="name"></div>
+<div id="user"></div>
+<div id="company"></div>
+<div id="location"></div>
+<div id="mail"></div>
+<div id="github"></div>
+
+
+<script>
+"use strict";
+function error(t) {
+    out.style.color = 'red'
+    out.innerText = t; throw t
+}
+async function toJSON(url) {
+    let r = await fetch(url)
+    if (!r.ok) error(r.statusText)
+    return r.json()
+}
+async function readUser() {
+    const BR = "<BR>", 
+      URL = "https://api.github.com/users/"
+    let u = await toJSON(URL+usr.value)
+    if (!u || !u.login) 
+      error(usr.value+' not found')
+
+    document.getElementById("photo").src = u.avatar_url
+    document.getElementById("name").innerText = u.name
+    document.getElementById("user").innerText =  u.login
+    document.getElementById("company").innerText = u.company
+    document.getElementById("location").innerText = u.location
+    document.getElementById("mail").innerText = u.email
+    document.getElementById("github").innerText = u.blog
+
+
+}
+
+    readUser()
+</script>
