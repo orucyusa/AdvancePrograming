@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>JavaScript</title>
+    <link href="style.css" rel="stylesheet" type="text/css"> 
+    
+    <link rel="stylesheet" media="(max-width:500px" ) href="/mobile.css" type="text/css">
+
+</head>
+    
+
+<body>
+    <div class="container"></div>
+    <script>
+        const container = document.querySelector('.container');
+        let conDim = container.getBoundingClientRect();
+        const start = document.createElement('div');
+        start.textContent = "Start Game";
+        start.style.position = "absolute";
+        start.style.color = "white";
+        start.style.lineHeight = "200px";
+        start.style.height = "400px";
+        start.style.textAlign = "center";
+        start.style.fontSize = "6em";
+        start.style.textTransform = "uppercase";
+        start.style.backgroundColor = "red";
+        start.style.width = "100%";
+        start.addEventListener('click', startGame);
+        container.appendChild(start);
+        const ball = document.createElement('div');
+        ball.style.position = "absolute";
+        ball.style.width = "20px";
+        ball.style.height = "20px";
+        ball.style.backgroundColor = "white";
+        ball.style.borderRadius = "25px";
+        ball.style.backgroundImage = "url('ball.png')";
+        ball.style.backgroundSize = "20px 20px";
+        ball.style.top = "70%";
+        ball.style.left = "50%";
+        ball.style.display = "none";
+        container.appendChild(ball);
+        const paddle = document.createElement('div');
+        paddle.style.position = "absolute";
+        paddle.style.backgroundColor = "white";
+        paddle.style.height = "20px";
+        paddle.style.width = "100px";
+        paddle.style.borderRadius = "25px";
+        paddle.style.bottom = "20px";
+        paddle.style.left = "50%";
+        container.appendChild(paddle);
+        const player = {
+            start: true
+        };
+
+        function rColor() {
+            return "#0000ff"
+        }
+        function createBrick(pos) {
+            const div = document.createElement('div');
+            div.setAttribute('class', 'brick');
+            div.style.backgroundColor = rColor();
+            div.textContent = pos.count + 1;
+            div.style.left = pos.x + 'px';
+            div.style.top = pos.y + 'px';
+            container.appendChild(div);
+        }
+        function startGame() {
+            if (player.start) {
+                start.style.display = "none";
+                ball.style.display = "block";
+                ball.style.left = paddle.offsetLeft + 50 + "px";
+                ball.style.top = paddle.offsetTop - 30 + "px";
+                player.ballDir = [100, -5];
+                player.num = 28;
+                setupBricks(player.num);
+            }
+        }
+        function setupBricks(num) {
+            let row = {
+                x: ((conDim.width % 100) / 2)
+                , y: 50
+            }
+            let skip = false;
+            for (let x = 0; x < num; x++) {
+                //console.log(row);
+                if (row.x > (conDim.width - 100)) {
+                    row.y += 50;
+                    if (row.y > (conDim.height / 2)) {
+                        skip = true;
+                    }
+                    row.x = ((conDim.width % 100) / 2);
+                }
+                row.count = x;
+                if (!skip) {
+                    createBrick(row);
+                }
+                row.x += 100;
+            }
+        }
+    </script>
+</body>
+
+</html>
