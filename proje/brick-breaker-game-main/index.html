@@ -1,104 +1,378 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>JavaScript</title>
-    <link href="style.css" rel="stylesheet" type="text/css"> 
-    
-    <link rel="stylesheet" media="(max-width:500px" ) href="/mobile.css" type="text/css">
 
+
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        canvas {
+            background: rgb(16, 30, 151);
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
 </head>
-    
+<style>
+    h1 {
+        text-align: center;
+        letter-spacing: 2px;
+        word-spacing: 10px;
+        text-shadow: 0px 0px 10px black;
+        line-height: 1.8;
+        font-stretch: extra-condensed;
+        font: 30px arial, sans-serif;
+        font-weight: bold;
+    }
+
+    body {
+        background: url("https://yusaorucfsmvu.github.io/AdvancePrograming/1219598.jpg") no-repeat center center fixed;
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-position: center;
+        background-size: cover;
+        min-width: 500px;
+        width: auto;
+    }
+</style>
 
 <body>
-    <div class="container"></div>
+
+    <canvas id="myCanvas" style="margin-top: 5%;" width="900" height="650">
+
+        <div id="EkstraCan" width="80px" height="10px">
+
+        </div>
+    </canvas>
+
     <script>
-        const container = document.querySelector('.container');
-        let conDim = container.getBoundingClientRect();
-        const start = document.createElement('div');
-        start.textContent = "Start Game";
-        start.style.position = "absolute";
-        start.style.color = "white";
-        start.style.lineHeight = "200px";
-        start.style.height = "400px";
-        start.style.textAlign = "center";
-        start.style.fontSize = "6em";
-        start.style.textTransform = "uppercase";
-        start.style.backgroundColor = "red";
-        start.style.width = "100%";
-        start.addEventListener('click', startGame);
-        container.appendChild(start);
-        const ball = document.createElement('div');
-        ball.style.position = "absolute";
-        ball.style.width = "20px";
-        ball.style.height = "20px";
-        ball.style.backgroundColor = "white";
-        ball.style.borderRadius = "25px";
-        ball.style.backgroundImage = "url('ball.png')";
-        ball.style.backgroundSize = "20px 20px";
-        ball.style.top = "70%";
-        ball.style.left = "50%";
-        ball.style.display = "none";
-        container.appendChild(ball);
-        const paddle = document.createElement('div');
-        paddle.style.position = "absolute";
-        paddle.style.backgroundColor = "white";
-        paddle.style.height = "20px";
-        paddle.style.width = "100px";
-        paddle.style.borderRadius = "25px";
-        paddle.style.bottom = "20px";
-        paddle.style.left = "50%";
-        container.appendChild(paddle);
-        const player = {
-            start: true
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
+        var TopCap = 10;
+        var x = canvas.width / 2;
+        var y = canvas.height - 30;
+        var dx = 2;
+        var dy = -2;
+        var raketUzunluk = 10;
+        var raketGenislik = 75;
+        var raketX = (canvas.width - raketGenislik) / 2;
+        var sag_tus = false;
+        var sol_tus = false;
+        var tugla_satir = 10;
+        var tugla_sutun = 5;
+        var tuglaUzunluk = 20;
+        var tuglaGenislik = 75;
+        var tuglaBosluk = 10;
+        var tuglalar_Yukari_Bosluk = 30;
+        var tuglalar_Sol_Bosluk = 30;
+        var puan = 0;
+        var can = 3;
+        var starArray = [];
+        var oyunBasladiMi = 0;
+        var buttonArray = [];
+
+        var tuglalar = [];
+        for (var c = 0; c < tugla_sutun; c++) {
+            tuglalar[c] = [];
+            for (var r = 0; r < tugla_satir; r++) {
+                tuglalar[c][r] = { x: 0, y: 0, status: 1 };
+            }
+        }
+
+        document.addEventListener("keydown", tus_bas, false);
+        document.addEventListener("keyup", tus_birak, false);
+
+
+        function tus_bas(e) {
+            if (e.keyCode == 39) {
+                sag_tus = true;
+            }
+            else if (e.keyCode == 37) {
+                sol_tus = true;
+            }
+        }
+        //classlar 
+        function Star() {
+            //star x, y 
+            this.x = randomNumber(1, canvas.width);
+            this.y = 0;
+            //boyut 
+            this.radius = 1;
+            //bir sonra ki hareket için ikinci y
+            this.yd = randomNumber(1, 8);
+            this.color = "white";
+        }
+        function tus_birak(e) {
+            if (e.keyCode == 39) {
+                sag_tus = false;
+            }
+            else if (e.keyCode == 37) {
+                sol_tus = false;
+            }
+        }
+        function carpismaKontrol() {
+            for (var c = 0; c < tugla_sutun; c++) {
+                for (var r = 0; r < tugla_satir; r++) {
+                    var b = tuglalar[c][r];
+                    if (b.status == 1) {
+                        if (x > b.x && x < b.x + tuglaGenislik && y > b.y && y < b.y + tuglaUzunluk) {
+                            dy = -dy;
+                            b.status = 0;
+                            puan++;
+                            if (puan == 10) {
+                                can++;
+                                var yazi = document.getElementById("EkstraCan");
+                                yazi.innerText = "EKSTRA CAN KAZANDINIZ...";
+                            }
+
+                            if (puan == tugla_satir * tugla_sutun) {
+                                document.location.reload();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        function TopCiz() {
+            ctx.beginPath();
+            ctx.arc(x, y, TopCap, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+        function raketCiz() {
+            ctx.beginPath();
+            ctx.rect(raketX, canvas.height - raketUzunluk, raketGenislik, raketUzunluk);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+        function TuglaCiz() {
+            for (var c = 0; c < tugla_sutun; c++) {
+                for (var r = 0; r < tugla_satir; r++) {
+                    if (tuglalar[c][r].status == 1) {
+                        var tuglaX = (r * (tuglaGenislik + tuglaBosluk)) + tuglalar_Yukari_Bosluk;
+                        var tuglaY = (c * (tuglaUzunluk + tuglaBosluk)) + tuglalar_Sol_Bosluk;
+                        tuglalar[c][r].x = tuglaX;
+                        tuglalar[c][r].y = tuglaY;
+                        ctx.beginPath();
+                        ctx.rect(tuglaX, tuglaY, tuglaGenislik, tuglaUzunluk);
+                        ctx.fillStyle = "#0095DD";
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+        function PuanGoster() {
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#0095DD";
+            ctx.fillText("Puan: " + puan, 30, 20);
+        }
+        function CanGoster() {
+            ctx.font = "16px Arial";
+            ctx.fillStyle = "#0095DD";
+            ctx.fillText("Kalan Can Sayisi: " + can, canvas.width - 170, 20);
+        }
+        function randomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        };
+        function YildizCiz() {
+            for (var i = 0; i < starArray.length; i++) {
+                ctx.fillStyle = starArray[i].color;
+                ctx.beginPath();
+                ctx.arc(starArray[i].x, starArray[i].y, starArray[i].radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+                starArray[i].y += starArray[i].yd;
+            }
+
+        }
+        function OyunSonu() {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+
+
+            ctx.font = "50px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("Score = " + puan, (canvas.width - 50) / 2, (canvas.height - 50) / 2);
+
+            ctx.fillStyle = "cyan";
+            ctx.fillRect((canvas.width - 150) / 2, (canvas.height - 150), 150, 50);
+            ctx.font = "25px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.fillText("Menu", (canvas.width - 20) / 2, (canvas.height - 120));
+
+            buttonAgain = new buttonCanvas((canvas.width - 175), (canvas.height - 70));
+            buttonArray.push(buttonAgain);
+            
+            cancelAnimationFrame(request);
+        }
+        function buttonCanvas(x, y) {
+            this.x = x;
+            this.y = y;
+            this.width = 150;
+            this.height = 50;
         };
 
-        function rColor() {
-            return "#0000ff"
+        function ButonCizme() {
+
+            ctx.fillStyle = "black";
+            ctx.fillRect((canvas.width - 100), (canvas.height - 80), 100, 50);
+            ctx.strokeStyle = "white";
+            ctx.strokeRect((canvas.width - 100), (canvas.height - 80), 100, 50);
+
+            ctx.fillStyle = "black";
+            ctx.fillRect((0), (canvas.height - 80), 100, 50);
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(0, (canvas.height - 80), 100, 50);
+
+            ctx.font = "30px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.fillText(">", (canvas.width - 40), (canvas.height - 48));
+
+            ctx.font = "30px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.fillText("<", (canvas.width - 870), (canvas.height - 48));
         }
-        function createBrick(pos) {
-            const div = document.createElement('div');
-            div.setAttribute('class', 'brick');
-            div.style.backgroundColor = rColor();
-            div.textContent = pos.count + 1;
-            div.style.left = pos.x + 'px';
-            div.style.top = pos.y + 'px';
-            container.appendChild(div);
+
+
+        function girisEkrani() {
+
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = "50px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText(" -  BRİCK BRAKER  -", (canvas.width - 50) / 2, (canvas.height - 50) / 2);
+
+            ctx.font = "20px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText(" -  Oyunumuzda tuğlaların hepsini kırabilirseniz oyunu kazanabilirsiniz. Bol şans...    -", (canvas.width - 10) / 2, (canvas.height + 100) / 2);
+
+            x.font = "50px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("Score = " + puan, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
+
+            ctx.fillStyle = "cyan";
+            ctx.fillRect((canvas.width - 170) / 2, (canvas.height - 150), 150, 50);
+            ctx.font = "25px Verdana bold";
+            ctx.fillStyle = "white";
+            ctx.fillText("Start", (canvas.width - 50) / 2, (canvas.height - 120));
+
+
+            buttonPlay = new buttonCanvas((canvas.width - 170) / 2, (canvas.height - 150), 150, 50);
+
+            buttonArray.push(buttonPlay);
+
         }
-        function startGame() {
-            if (player.start) {
-                start.style.display = "none";
-                ball.style.display = "block";
-                ball.style.left = paddle.offsetLeft + 50 + "px";
-                ball.style.top = paddle.offsetTop - 30 + "px";
-                player.ballDir = [100, -5];
-                player.num = 28;
-                setupBricks(player.num);
+        function isInside(pos, rect) {
+            return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y
+        }
+        function getMousePos(canvas, event) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+        function baslat() {
+            
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //belirli sayıda arka plan için yıldız 
+            if (randomNumber(1, 100) < 50) {
+                starArray.push(new Star());
             }
-        }
-        function setupBricks(num) {
-            let row = {
-                x: ((conDim.width % 100) / 2)
-                , y: 50
+
+
+            ButonCizme();
+            YildizCiz();
+            TuglaCiz();
+            TopCiz();
+            raketCiz();
+            PuanGoster();
+            CanGoster();
+            carpismaKontrol();
+
+
+            if (x + dx > canvas.width - TopCap || x + dx < TopCap) {
+                dx = -dx;
             }
-            let skip = false;
-            for (let x = 0; x < num; x++) {
-                //console.log(row);
-                if (row.x > (conDim.width - 100)) {
-                    row.y += 50;
-                    if (row.y > (conDim.height / 2)) {
-                        skip = true;
+            if (y + dy < TopCap) {
+                dy = -dy;
+            }
+            else if (y + dy > canvas.height - TopCap) {
+                if (x > raketX && x < raketX + raketGenislik) {
+                    dy = -dy;
+                }
+                else {
+                    can--;
+                    if (can == 0) {
+                        OyunSonu();
+                        
                     }
-                    row.x = ((conDim.width % 100) / 2);
+                    else if(can < 0){
+                        document.location.reload();
+                    }
+                    else {
+                        x = canvas.width / 2;
+                        y = canvas.height - 30;
+                        dx = 3;
+                        dy = -3;
+                        raketX = (canvas.width - raketGenislik) / 2;
+                    }
                 }
-                row.count = x;
-                if (!skip) {
-                    createBrick(row);
-                }
-                row.x += 100;
             }
+
+            if (sag_tus && raketX < canvas.width - raketGenislik) {
+                raketX += 7;
+            }
+            else if (sol_tus && raketX > 0) {
+                raketX -= 7;
+            }
+
+            x += dx;
+            y += dy;
+           var request=requestAnimationFrame(baslat);
         }
+        
+
+        canvas.addEventListener('click', function (evt) {
+            var mousePos = getMousePos(canvas, evt);
+            console.log(mousePos);
+            console.log(buttonArray[1]);
+
+
+            for (item in buttonArray) {
+                if (isInside(mousePos, buttonArray[item])) {
+
+                    if (item == 0) {
+                        baslat();
+                    }
+                    if (item == 1) {
+                        baslat();
+                        
+                    }
+                }
+
+            }
+
+        });
+        girisEkrani();
+
     </script>
+
 </body>
 
 </html>
