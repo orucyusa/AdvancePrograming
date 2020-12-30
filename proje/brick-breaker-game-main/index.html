@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    
 
 
 
@@ -52,6 +53,8 @@
     </canvas>
 
     <script>
+        
+        var request;
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
         var TopCap = 10;
@@ -195,6 +198,8 @@
 
         }
         function OyunSonu() {
+
+            cancelAnimationFrame(request);
             ctx.fillStyle = "#000000";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -203,18 +208,18 @@
             ctx.font = "50px Verdana bold";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
-            ctx.fillText("Score = " + puan, (canvas.width - 50) / 2, (canvas.height - 50) / 2);
-
-            ctx.fillStyle = "cyan";
-            ctx.fillRect((canvas.width - 150) / 2, (canvas.height - 150), 150, 50);
-            ctx.font = "25px Verdana bold";
-            ctx.fillStyle = "white";
-            ctx.fillText("Menu", (canvas.width - 20) / 2, (canvas.height - 120));
-
-            buttonAgain = new buttonCanvas((canvas.width - 175), (canvas.height - 70));
-            buttonArray.push(buttonAgain);
+            localStorage.setItem("Ensonskor",puan);
+            var enbuyukskor=localStorage.getItem("enbuyukskor");
+            if(enbuyukskor==null){
+                enbuyukskor=0;
+            }
+            enbuyukskor=parseInt(enbuyukskor);
+            if(puan>enbuyukskor){
+                enbuyukskor=puan;
+            }
+            localStorage.setItem("enbuyukskor",enbuyukskor);
+            document.location.reload();
             
-            cancelAnimationFrame(request);
         }
         function buttonCanvas(x, y) {
             this.x = x;
@@ -246,7 +251,14 @@
 
 
         function girisEkrani() {
-
+            var enbuyukskor=localStorage.getItem("enbuyukskor");
+            var Ensonskor=localStorage.getItem("Ensonskor");
+            if(enbuyukskor==null){
+                enbuyukskor=0;
+            }
+            if(Ensonskor==null){
+                Ensonskor=0;
+            }
             ctx.fillStyle = "#000000";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.font = "50px Verdana bold";
@@ -262,7 +274,7 @@
             x.font = "50px Verdana bold";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
-            ctx.fillText("Score = " + puan, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
+            ctx.fillText("En buyuk skor = " + enbuyukskor + "En son skor ="+Ensonskor, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
 
             ctx.fillStyle = "cyan";
             ctx.fillRect((canvas.width - 170) / 2, (canvas.height - 150), 150, 50);
@@ -320,10 +332,6 @@
                     can--;
                     if (can == 0) {
                         OyunSonu();
-                        
-                    }
-                    else if(can < 0){
-                        document.location.reload();
                     }
                     else {
                         x = canvas.width / 2;
@@ -344,7 +352,7 @@
 
             x += dx;
             y += dy;
-           var request=requestAnimationFrame(baslat);
+            request=window.requestAnimationFrame(baslat);
         }
         
 
@@ -359,10 +367,6 @@
 
                     if (item == 0) {
                         baslat();
-                    }
-                    if (item == 1) {
-                        baslat();
-                        
                     }
                 }
 
