@@ -259,7 +259,7 @@
             ctx.fillRect((canvas.width - 900) / 2, (canvas.height - 100), 100, 50);
             ctx.font = "25px Verdana bold";
             ctx.fillStyle = "black";
-            ctx.fillText("        <         ", (canvas.width - 0) / 2, (canvas.height - 70));
+            ctx.fillText("<         ", (canvas.width - 700) / 2, (canvas.height - 70));
 
             buttonSol = new buttonCanvas((0), (canvas.height - 80), 100, 50);
             buttonArray.push(buttonSol);
@@ -395,13 +395,13 @@
                     else if (item == 1) {
                         if ( raketX > 0) {
 
-                            raketX -= 60;
+                            raketX -= 80;
                         }
                     }
                     else if (item == 2) {
                         if ( raketX < canvas.width - raketGenislik) {
 
-                            raketX += 60;
+                            raketX += 80;
                         }
                     }
                 }
