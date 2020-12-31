@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 
-    
+
 
 
 
@@ -11,7 +11,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width">
     <link rel="icon" href="https://yusaorucfsmvu.github.io/AdvancePrograming/images/icon192.png">
-    
+
     <style>
         * {
             padding: 0;
@@ -61,7 +61,7 @@
     </canvas>
 
     <script>
-        
+
         var request;
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
@@ -216,18 +216,18 @@
             ctx.font = "50px Verdana bold";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
-            localStorage.setItem("Ensonskor",puan);
-            var enbuyukskor=localStorage.getItem("enbuyukskor");
-            if(enbuyukskor==null){
-                enbuyukskor=0;
+            localStorage.setItem("Ensonskor", puan);
+            var enbuyukskor = localStorage.getItem("enbuyukskor");
+            if (enbuyukskor == null) {
+                enbuyukskor = 0;
             }
-            enbuyukskor=parseInt(enbuyukskor);
-            if(puan>enbuyukskor){
-                enbuyukskor=puan;
+            enbuyukskor = parseInt(enbuyukskor);
+            if (puan > enbuyukskor) {
+                enbuyukskor = puan;
             }
-            localStorage.setItem("enbuyukskor",enbuyukskor);
+            localStorage.setItem("enbuyukskor", enbuyukskor);
             document.location.reload();
-            
+
         }
         function buttonCanvas(x, y) {
             this.x = x;
@@ -238,23 +238,23 @@
 
         function ButonCizme() {
 
-           /* ctx.fillStyle = "black";
-            ctx.fillRect((canvas.width - 100), (canvas.height - 80), 100, 50);
-            ctx.strokeStyle = "white";
-            ctx.strokeRect((canvas.width - 100), (canvas.height - 80), 100, 50);
-
-            ctx.fillStyle = "black";
-            ctx.fillRect((0), (canvas.height - 80), 100, 50);
-            ctx.strokeStyle = "white";
-            ctx.strokeRect(0, (canvas.height - 80), 100, 50);
-
-            ctx.font = "30px Verdana bold";
-            ctx.fillStyle = "white";
-            ctx.fillText(">", (canvas.width - 40), (canvas.height - 48));
-
-            ctx.font = "30px Verdana bold";
-            ctx.fillStyle = "white";
-            ctx.fillText("<", (canvas.width - 870), (canvas.height - 48)); */
+            /* ctx.fillStyle = "black";
+             ctx.fillRect((canvas.width - 100), (canvas.height - 80), 100, 50);
+             ctx.strokeStyle = "white";
+             ctx.strokeRect((canvas.width - 100), (canvas.height - 80), 100, 50);
+ 
+             ctx.fillStyle = "black";
+             ctx.fillRect((0), (canvas.height - 80), 100, 50);
+             ctx.strokeStyle = "white";
+             ctx.strokeRect(0, (canvas.height - 80), 100, 50);
+ 
+             ctx.font = "30px Verdana bold";
+             ctx.fillStyle = "white";
+             ctx.fillText(">", (canvas.width - 40), (canvas.height - 48));
+ 
+             ctx.font = "30px Verdana bold";
+             ctx.fillStyle = "white";
+             ctx.fillText("<", (canvas.width - 870), (canvas.height - 48)); */
             ctx.fillStyle = "cyan";
             ctx.fillRect((canvas.width - 800) / 2, (canvas.height - 100), 100, 50);
             ctx.font = "25px Verdana bold";
@@ -276,13 +276,13 @@
 
 
         function girisEkrani() {
-            var enbuyukskor=localStorage.getItem("enbuyukskor");
-            var Ensonskor=localStorage.getItem("Ensonskor");
-            if(enbuyukskor==null){
-                enbuyukskor=0;
+            var enbuyukskor = localStorage.getItem("enbuyukskor");
+            var Ensonskor = localStorage.getItem("Ensonskor");
+            if (enbuyukskor == null) {
+                enbuyukskor = 0;
             }
-            if(Ensonskor==null){
-                Ensonskor=0;
+            if (Ensonskor == null) {
+                Ensonskor = 0;
             }
             ctx.fillStyle = "#000000";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -299,7 +299,7 @@
             x.font = "50px Verdana bold";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
-            ctx.fillText("En buyuk skor = " + enbuyukskor + "En son skor ="+Ensonskor, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
+            ctx.fillText("En buyuk skor = " + enbuyukskor + "En son skor =" + Ensonskor, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
 
             ctx.fillStyle = "cyan";
             ctx.fillRect((canvas.width - 170) / 2, (canvas.height - 150), 150, 50);
@@ -324,7 +324,7 @@
             };
         }
         function baslat() {
-            
+
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             //belirli sayıda arka plan için yıldız 
@@ -377,14 +377,12 @@
 
             x += dx;
             y += dy;
-            request=window.requestAnimationFrame(baslat);
+            request = window.requestAnimationFrame(baslat);
         }
-        
+
 
         canvas.addEventListener('click', function (evt) {
             var mousePos = getMousePos(canvas, evt);
-            console.log(mousePos);
-            console.log(buttonArray[1]);
 
 
             for (item in buttonArray) {
@@ -393,11 +391,17 @@
                     if (item == 0) {
                         baslat();
                     }
-                    else if(item ==1){
-                        raketX-=48;
+                    else if (item == 1) {
+                        if ( raketX > 0) {
+
+                            raketX -= 60;
+                        }
                     }
-                    else if(item==2){
-                        raketX+=48;
+                    else if (item == 2) {
+                        if ( raketX < canvas.width - raketGenislik) {
+
+                            raketX += 60;
+                        }
                     }
                 }
 
