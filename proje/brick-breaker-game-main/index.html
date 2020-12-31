@@ -259,7 +259,7 @@
             ctx.fillRect((canvas.width - 900) / 2, (canvas.height - 100), 100, 50);
             ctx.font = "25px Verdana bold";
             ctx.fillStyle = "black";
-            ctx.fillText("        <         ", (canvas.width - 750) / 2, (canvas.height - 70));
+            ctx.fillText("        <         ", (canvas.width - 0) / 2, (canvas.height - 70));
 
             buttonSol = new buttonCanvas((0), (canvas.height - 80), 100, 50);
             buttonArray.push(buttonSol);
@@ -299,7 +299,8 @@
             x.font = "50px Verdana bold";
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
-            ctx.fillText("En buyuk skor = " + enbuyukskor + "En son skor =" + Ensonskor, (canvas.width - 50) / 2, (canvas.height + 200) / 2);
+            ctx.fillText("En buyuk skor = " + enbuyukskor , (canvas.width - 50) / 2, (canvas.height + 200) / 2);
+            ctx.fillText("En son skor =" + Ensonskor,(canvas.width - 50) / 2, (canvas.height + 250) / 2);
 
             ctx.fillStyle = "cyan";
             ctx.fillRect((canvas.width - 170) / 2, (canvas.height - 150), 150, 50);
