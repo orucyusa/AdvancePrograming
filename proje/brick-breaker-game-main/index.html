@@ -65,7 +65,7 @@
         var dx = 2;
         var dy = -2;
         var raketUzunluk = 10;
-        var raketGenislik = 125;
+        var raketGenislik = 115;
         var raketX = (canvas.width - raketGenislik) / 2;
         var sag_tus = false;
         var sol_tus = false;
@@ -92,6 +92,7 @@
 
         document.addEventListener("keydown", tus_bas, false);
         document.addEventListener("keyup", tus_birak, false);
+        //document.addEventListener("mousemove", mouseMoveHandler, false); MOUSE Hareketi
 
         //classlar 
         function Star() {
@@ -128,6 +129,7 @@
                         if (x > b.x && x < b.x + tuglaGenislik && y > b.y && y < b.y + tuglaUzunluk) {
                             dy = -dy;
                             b.status = 0;
+                            puan++;
                         }
                     }
                 }
@@ -188,6 +190,12 @@
             }
 
         }
+        /*  function mouseMoveHandler(e) {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas.width) {
+            raketX = relativeX - raketGe/2;
+        }
+    }  MOUSE Hareketlerini Aktif EDEN Fonksiyon*/  
         function OyunSonu() {
 
             cancelAnimationFrame(request);
@@ -324,7 +332,7 @@
                     if (can == 0) {
                         OyunSonu();
                     }
-                    else { //ortaya getiriyor
+                    else {
                         x = canvas.width / 2;
                         y = canvas.height - 30;
                         dx = 3;
@@ -359,11 +367,13 @@
                     }
                     else if (item == 1) {
                         if ( raketX > 0) {
+
                             raketX -= 100;
                         }
                     }
                     else if (item == 2) {
                         if ( raketX < canvas.width - raketGenislik) {
+
                             raketX += 100;
                         }
                     }
