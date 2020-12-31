@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html>
-
-
-
-
-
-
 <head>
 
     <meta charset="utf-8" />
@@ -71,7 +65,7 @@
         var dx = 2;
         var dy = -2;
         var raketUzunluk = 10;
-        var raketGenislik = 75;
+        var raketGenislik = 125;
         var raketX = (canvas.width - raketGenislik) / 2;
         var sag_tus = false;
         var sol_tus = false;
@@ -99,15 +93,6 @@
         document.addEventListener("keydown", tus_bas, false);
         document.addEventListener("keyup", tus_birak, false);
 
-
-        function tus_bas(e) {
-            if (e.keyCode == 39) {
-                sag_tus = true;
-            }
-            else if (e.keyCode == 37) {
-                sol_tus = true;
-            }
-        }
         //classlar 
         function Star() {
             //star x, y 
@@ -118,6 +103,14 @@
             //bir sonra ki hareket için ikinci y
             this.yd = randomNumber(1, 8);
             this.color = "white";
+        }
+        function tus_bas(e) {
+            if (e.keyCode == 39) {
+                sag_tus = true;
+            }
+            else if (e.keyCode == 37) {
+                sol_tus = true;
+            }
         }
         function tus_birak(e) {
             if (e.keyCode == 39) {
@@ -135,16 +128,6 @@
                         if (x > b.x && x < b.x + tuglaGenislik && y > b.y && y < b.y + tuglaUzunluk) {
                             dy = -dy;
                             b.status = 0;
-                            puan++;
-                            if (puan == 10) {
-                                can++;
-                                var yazi = document.getElementById("EkstraCan");
-                                yazi.innerText = "EKSTRA CAN KAZANDINIZ...";
-                            }
-
-                            if (puan == tugla_satir * tugla_sutun) {
-                                document.location.reload();
-                            }
                         }
                     }
                 }
@@ -237,24 +220,6 @@
         };
 
         function ButonCizme() {
-
-            /* ctx.fillStyle = "black";
-             ctx.fillRect((canvas.width - 100), (canvas.height - 80), 100, 50);
-             ctx.strokeStyle = "white";
-             ctx.strokeRect((canvas.width - 100), (canvas.height - 80), 100, 50);
- 
-             ctx.fillStyle = "black";
-             ctx.fillRect((0), (canvas.height - 80), 100, 50);
-             ctx.strokeStyle = "white";
-             ctx.strokeRect(0, (canvas.height - 80), 100, 50);
- 
-             ctx.font = "30px Verdana bold";
-             ctx.fillStyle = "white";
-             ctx.fillText(">", (canvas.width - 40), (canvas.height - 48));
- 
-             ctx.font = "30px Verdana bold";
-             ctx.fillStyle = "white";
-             ctx.fillText("<", (canvas.width - 870), (canvas.height - 48)); */
             ctx.fillStyle = "cyan";
             ctx.fillRect((canvas.width - 900) / 2, (canvas.height - 100), 100, 50);
             ctx.font = "25px Verdana bold";
@@ -359,7 +324,7 @@
                     if (can == 0) {
                         OyunSonu();
                     }
-                    else {
+                    else { //ortaya getiriyor
                         x = canvas.width / 2;
                         y = canvas.height - 30;
                         dx = 3;
@@ -394,14 +359,12 @@
                     }
                     else if (item == 1) {
                         if ( raketX > 0) {
-
-                            raketX -= 80;
+                            raketX -= 100;
                         }
                     }
                     else if (item == 2) {
                         if ( raketX < canvas.width - raketGenislik) {
-
-                            raketX += 80;
+                            raketX += 100;
                         }
                     }
                 }
