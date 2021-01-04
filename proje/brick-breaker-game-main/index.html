@@ -81,6 +81,7 @@
         var starArray = [];
         var oyunBasladiMi = 0;
         var buttonArray = [];
+        var TuglaSayisi=tugla_satir*tugla_sutun;
 
         var tuglalar = [];
         for (var c = 0; c < tugla_sutun; c++) {
@@ -129,7 +130,12 @@
                         if (x > b.x && x < b.x + tuglaGenislik && y > b.y && y < b.y + tuglaUzunluk) {
                             dy = -dy;
                             b.status = 0;
+                            TuglaSayisi--;
                             puan++;
+                            if(TuglaSayisi==0){
+                                OyunSonu();
+                                girisEkrani();
+                            }
                         }
                     }
                 }
@@ -329,7 +335,7 @@
                 }
                 else {
                     can--;
-                    if (can == 0) {
+                    if (can==0) {
                         OyunSonu();
                     }
                     else {
